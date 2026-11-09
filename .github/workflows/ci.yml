@@ -1,0 +1,20 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd, mbstring, xml, zip, curl
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax
+        run: for f in $(git ls-files '*.php'); do php -l "$f"; done
+      - name: Browser
+        run: npm i --no-save playwright-core@1.65.0 && npx playwright-core install --with-deps chromium
+      - name: Bench
+        run: bash test/run.sh

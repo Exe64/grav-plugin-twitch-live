@@ -1,0 +1,59 @@
+{# Twitch channels of the Admin, in the presentation chosen there: {% include 'partials/twitch-live.html.twig' %};
+   twitch_params (from the [twitch] shortcode) replaces the Admin settings of the same name.
+   A theme adds its own classes with {% include 'partials/twitch-live.html.twig' with {twitch_class: '…',
+   twitch_wrap_class: '…', twitch_title_class: '…'} %} (section, inner block, heading), sets the --tw-* custom
+   properties of twitch-live.css, or overrides this file by putting its own at the same path. Images come from Twitch's CDN; the
+   player loads only when the reader clicks a live channel. Without JavaScript, every name is a link to Twitch. #}
+{% macro play() %}<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M7 4l13 8-13 8z"/></svg>{% endmacro %}
+{% macro media(c, w, h) %}{% if c.thumb %}<img src="{{ c.thumb }}" alt="" width="{{ w }}" height="{{ h }}" loading="lazy" decoding="async" referrerpolicy="no-referrer">{% else %}<span class="tw-ph" aria-hidden="true">{{ c.name|first|upper }}</span>{% endif %}{% endmacro %}
+{% macro avatar(c) %}{% if c.avatar %}<img class="tw-avatar" src="{{ c.avatar }}" alt="" width="44" height="44" loading="lazy" decoding="async" referrerpolicy="no-referrer">{% else %}<span class="tw-avatar tw-ph" aria-hidden="true">{{ c.name|first|upper }}</span>{% endif %}{% endmacro %}
+{% macro status(c) %}{% if c.live %}<span class="tw-badge">{{ 'PLUGIN_TWITCH_LIVE.LIVE'|t }}</span> <span class="tw-viewers">{{ ('PLUGIN_TWITCH_LIVE.VIEWERS_' ~ (c.viewers > 1 ? 'N' : c.viewers))|t(c.viewers|number_format(0, '.', 'PLUGIN_TWITCH_LIVE.THOUSANDS'|t)) }}</span>{% elseif c.live is same as(false) %}<span class="tw-off">{{ 'PLUGIN_TWITCH_LIVE.OFFLINE'|t }}</span>{% endif %}{% endmacro %}
+{% macro card(c) %}{% import _self as tw %}{% set href = 'https://www.twitch.tv/' ~ c.login %}
+      <li class="tw-card{{ c.live ? ' is-live' }}">
+        <a class="tw-thumb" href="{{ href }}"{% if c.live %} data-channel="{{ c.login }}"{% endif %} tabindex="-1" aria-hidden="true">{{ tw.media(c, 640, 360) }}{% if c.live %}<span class="tw-play">{{ tw.play() }}</span>{% endif %}</a>
+        <div class="tw-body">
+          {{ tw.avatar(c) }}
+          <div class="tw-text">
+            <h3><a class="twitch-link" href="{{ href }}"{% if c.live %} data-channel="{{ c.login }}"{% endif %}><span class="twitch-name">{{ c.name }}</span></a></h3>
+            {% if c.live is not null %}<p class="tw-status">{{ tw.status(c) }}</p>{% endif %}
+            {% if c.title %}<p class="tw-title">{{ c.title }}</p>{% endif %}
+            {% if c.game %}<p class="tw-game">{{ c.game }}</p>{% endif %}
+          </div>
+        </div>
+      </li>{% endmacro %}
+{% import _self as tw %}
+{% set tl = twitch_live(twitch_params ?? {}) %}
+{% if tl.channels or tl.feature %}
+{% do assets.addCss('plugin://twitch-live/assets/twitch-live.css') %}
+{% do assets.addJs('plugin://twitch-live/assets/twitch-live.js', {group: 'bottom', loading: 'defer'}) %}
+<section class="{{ twitch_class is defined ? twitch_class ~ ' ' }}twitch twitch--{{ tl.layout }}" aria-labelledby="{{ tl.id }}-title" data-player-title="{{ 'PLUGIN_TWITCH_LIVE.PLAYER_TITLE'|t }}">
+  <div{% if twitch_wrap_class is defined %} class="{{ twitch_wrap_class }}"{% endif %}>
+    <div class="tw-head">
+      <h2{% if twitch_title_class is defined %} class="{{ twitch_title_class }}"{% endif %} id="{{ tl.id }}-title">{{ 'PLUGIN_TWITCH_LIVE.HEADING'|t }}</h2>
+      {% if tl.layout == 'strip' %}<p class="tw-strip-ctl" hidden><button class="tw-prev" type="button"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="tw-sr">{{ 'PLUGIN_TWITCH_LIVE.PREV'|t }}</span></button><button class="tw-next" type="button"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg><span class="tw-sr">{{ 'PLUGIN_TWITCH_LIVE.NEXT'|t }}</span></button></p>{% endif %}
+    </div>
+    <div class="tw-stage" id="{{ tl.id }}-stage" hidden>
+      <div class="tw-stage-bar"><p>{{ 'PLUGIN_TWITCH_LIVE.NOW_PLAYING'|t }} <strong class="tw-now"></strong></p><button class="tw-close" type="button">{{ 'PLUGIN_TWITCH_LIVE.CLOSE'|t }}</button></div>
+      <div class="tw-frame"></div>
+    </div>
+    {% if tl.feature %}{% set f = tl.feature %}{% set href = 'https://www.twitch.tv/' ~ f.login %}
+    <article class="tw-feature{{ f.live ? ' is-live' }}" aria-labelledby="{{ tl.id }}-feature-name">
+      <a class="tw-feature-media" href="{{ href }}"{% if f.live %} data-channel="{{ f.login }}"{% endif %} tabindex="-1" aria-hidden="true">{% if f.thumb %}<img src="{{ f.thumb|replace({'-640x360.': '-1280x720.'}) }}" alt="" width="1280" height="720" decoding="async" referrerpolicy="no-referrer">{% else %}<span class="tw-ph">{{ f.name|first|upper }}</span>{% endif %}{% if f.live %}<span class="tw-play">{{ tw.play() }}</span>{% endif %}</a>
+      <div class="tw-feature-text">
+        {% if f.live is not null %}<p class="tw-status">{{ tw.status(f) }}</p>{% endif %}
+        <h3 id="{{ tl.id }}-feature-name">{{ tw.avatar(f) }}<a class="twitch-link" href="{{ href }}"{% if f.live %} data-channel="{{ f.login }}"{% endif %}><span class="twitch-name">{{ f.name }}</span></a></h3>
+        {% if f.title %}<p class="tw-title">{{ f.title }}</p>{% endif %}
+        {% if f.game %}<p class="tw-game">{{ f.game }}</p>{% endif %}
+        {% if f.live %}<a class="tw-watch" href="{{ href }}" data-channel="{{ f.login }}">{{ tw.play() }}{{ 'PLUGIN_TWITCH_LIVE.WATCH'|t }}</a>{% else %}<a class="tw-watch tw-visit" href="{{ href }}">{{ 'PLUGIN_TWITCH_LIVE.VISIT'|t }}</a>{% endif %}
+      </div>
+    </article>
+    {% endif %}
+    {% if tl.channels %}
+    <ul class="tw-items">
+    {% for c in tl.channels %}{{ tw.card(c) }}{% endfor %}
+    </ul>
+    {% endif %}
+    {% if (tl.feature and tl.feature.live) or tl.channels|filter(c => c.live)|length %}<p class="tw-note">{{ 'PLUGIN_TWITCH_LIVE.NOTE'|t }}</p>{% endif %}
+  </div>
+</section>
+{% endif %}

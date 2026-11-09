@@ -1,0 +1,78 @@
+name: Twitch Live
+slug: twitch-live
+type: plugin
+version: 1.0.0
+description: "Twitch channels, live ones first, as a grid, a compact list, a feature or a strip, on a page or anywhere with the [twitch] shortcode; the player loads only when the reader clicks."
+icon: twitch
+author:
+  name: Julien Dumur
+  url: https://github.com/Exe64
+license: MIT
+homepage: https://github.com/Exe64/grav-plugin-twitch-live
+demo: https://magicthegathering.fr
+docs: https://github.com/Exe64/grav-plugin-twitch-live/blob/main/README.md
+bugs: https://github.com/Exe64/grav-plugin-twitch-live/issues
+keywords: [twitch, live, stream, streaming, shortcode, embed]
+compatibility:
+  grav: ['2.2']
+dependencies:
+  - { name: grav, version: '>=2.2.0' }
+  - { name: shortcode-core, version: '>=5.0.0' }
+
+form:
+  validation: loose
+  fields:
+    enabled:
+      type: toggle
+      label: PLUGIN_ADMIN.PLUGIN_STATUS
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+    client_id:
+      type: text
+      label: PLUGIN_TWITCH_LIVE.CLIENT_ID
+      help: PLUGIN_TWITCH_LIVE.CLIENT_ID_HELP
+    client_secret:
+      type: password
+      label: PLUGIN_TWITCH_LIVE.CLIENT_SECRET
+      help: PLUGIN_TWITCH_LIVE.CLIENT_SECRET_HELP
+    channels:
+      type: selectize
+      label: PLUGIN_TWITCH_LIVE.CHANNELS
+      help: PLUGIN_TWITCH_LIVE.CHANNELS_HELP
+      validate:
+        type: commalist
+    layout:
+      type: select
+      label: PLUGIN_TWITCH_LIVE.LAYOUT
+      default: grid
+      options:
+        grid: PLUGIN_TWITCH_LIVE.LAYOUT_GRID
+        compact: PLUGIN_TWITCH_LIVE.LAYOUT_COMPACT
+        feature: PLUGIN_TWITCH_LIVE.LAYOUT_FEATURE
+        strip: PLUGIN_TWITCH_LIVE.LAYOUT_STRIP
+    feature:
+      type: select
+      label: PLUGIN_TWITCH_LIVE.FEATURE
+      help: PLUGIN_TWITCH_LIVE.FEATURE_HELP
+      default: top
+      options:
+        top: PLUGIN_TWITCH_LIVE.FEATURE_TOP
+        random: PLUGIN_TWITCH_LIVE.FEATURE_RANDOM
+        chosen: PLUGIN_TWITCH_LIVE.FEATURE_CHOSEN
+    feature_channel:
+      type: text
+      label: PLUGIN_TWITCH_LIVE.FEATURE_CHANNEL
+      help: PLUGIN_TWITCH_LIVE.FEATURE_CHANNEL_HELP
+    cache_lifetime:
+      type: text
+      label: PLUGIN_TWITCH_LIVE.CACHE_LIFETIME
+      help: PLUGIN_TWITCH_LIVE.CACHE_LIFETIME_HELP
+      default: 120
+      validate:
+        type: int
+        min: 30

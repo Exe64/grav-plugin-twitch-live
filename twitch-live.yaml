@@ -1,0 +1,16 @@
+enabled: true
+# Twitch names, set in the Admin
+channels: []
+# grid, compact, feature, strip
+layout: grid
+# For layout "feature": top (most watched live channel), random (among the live ones), chosen (feature_channel)
+feature: top
+feature_channel: ''
+# Seconds a status is kept on the server
+cache_lifetime: 120
+# Twitch application (dev.twitch.tv console), set in the Admin. Admin2 never sends a *secret back to the browser.
+client_id: ''
+client_secret: ''
+# Not in the Admin
+token_url: https://id.twitch.tv/oauth2/token
+api_url: https://api.twitch.tv/helix

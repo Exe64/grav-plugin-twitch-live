@@ -1,0 +1,96 @@
+/* twitch-live: four presentations (grid, compact, feature, strip). Colours and fonts come from --tw-*
+   custom properties a theme may set (on .twitch or above); without them, Twitch's dark palette for the
+   bands and the page's own text colour and font elsewhere. */
+/* Container: the feature stacks when the block is narrow (a page column), not only the screen */
+.twitch { --tw-live: #e0483f; container-type: inline-size; }
+.twitch .tw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.twitch .tw-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+.twitch .tw-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.25rem 1.75rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+/* Themes that style every li (Pico: square markers) */
+.twitch .tw-card { min-width: 0; margin: 0; list-style: none; }
+
+/* Image: 16:9, top rule red when live, muted when offline */
+.twitch .tw-thumb, .twitch .tw-feature-media { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--tw-band, #18181b); border-top: 6px solid var(--tw-line, rgba(128, 128, 128, .4)); text-decoration: none; }
+.twitch .is-live .tw-thumb, .twitch .is-live .tw-feature-media { border-top-color: var(--tw-live); }
+.twitch .tw-thumb img, .twitch .tw-feature-media img { margin: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s var(--tw-ease, ease-out), filter .3s; }
+.twitch .tw-card:not(.is-live) .tw-thumb img { filter: saturate(.3) brightness(.8); }
+.twitch .tw-card:hover .tw-thumb img { transform: scale(1.035); filter: none; }
+.twitch .tw-ph { display: grid; place-items: center; width: 100%; height: 100%; background: var(--tw-band, #18181b); color: var(--tw-accent, #9146ff); font-weight: 600; font-size: 3rem; line-height: 1; font-family: var(--tw-head-font); }
+.twitch .tw-play { position: absolute; left: .75rem; bottom: .75rem; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; background: rgba(14, 14, 16, .82); color: var(--tw-on-band, #efeff1); transition: background-color .2s, color .2s; }
+.twitch .tw-thumb:hover .tw-play, .twitch .tw-feature-media:hover .tw-play { background: var(--tw-accent, #9146ff); color: var(--tw-on-accent, #fff); }
+
+.twitch .tw-body { display: flex; gap: .8rem; align-items: flex-start; padding-top: 1rem; }
+.twitch .tw-text { min-width: 0; }
+.twitch .tw-avatar { flex: none; margin: 0; width: 44px; height: 44px; padding: 2px; border: 2px solid var(--tw-line, rgba(128, 128, 128, .4)); border-radius: 50%; object-fit: cover; background: var(--tw-paper); }
+.twitch .is-live .tw-avatar { border-color: var(--tw-live); }
+.twitch .tw-feature:not(.is-live) .tw-avatar { border-color: var(--tw-band-line, #3a3a3d); }
+.twitch span.tw-avatar { font-size: 1.35rem; }
+.twitch .tw-feature span.tw-avatar { font-size: 1.6rem; }
+.twitch h3 { font-size: 1.4rem; line-height: 1.15; margin: 0 0 .3rem; overflow-wrap: anywhere; }
+.twitch .twitch-link { color: var(--tw-ink-strong); text-decoration: none; }
+.twitch .twitch-link:hover { color: var(--tw-link); text-decoration: underline; }
+.twitch .tw-status { margin: 0 0 .35rem; display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .6rem; font-size: .875rem; color: var(--tw-muted); font-variant-numeric: tabular-nums; }
+.twitch .tw-badge { display: inline-flex; align-items: center; gap: .4rem; padding: .25rem .5rem .2rem; background: var(--tw-live); color: #fff; font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.twitch .tw-badge::before { content: ""; width: .45rem; height: .45rem; border-radius: 50%; background: currentColor; animation: tw-pulse 2s ease-in-out infinite; }
+.twitch .tw-title { margin: 0 0 .25rem; color: var(--tw-ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.twitch .tw-game { margin: 0; color: var(--tw-muted); font-size: .875rem; }
+.twitch .tw-note { margin: 2rem 0 0; color: var(--tw-muted); font-size: .875rem; }
+@keyframes tw-pulse { 50% { opacity: .35; } }
+
+/* Player stage, opened by a click, above the channels */
+.twitch .tw-stage { margin: 0 0 2.25rem; background: var(--tw-band, #18181b); color: var(--tw-on-band, #efeff1); border-top: 6px solid var(--tw-live); }
+.twitch .tw-stage[hidden] { display: none; }
+.twitch .tw-stage-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; padding: .6rem .9rem; }
+.twitch .tw-stage-bar p { margin: 0; color: var(--tw-on-band-soft, #dedee3); }
+.twitch .tw-stage-bar strong { color: var(--tw-on-band, #efeff1); }
+.twitch .tw-close { font: inherit; font-weight: 500; color: var(--tw-on-band, #efeff1); background: none; border: 1px solid var(--tw-band-line, #3a3a3d); padding: .45rem .8rem; cursor: pointer; }
+.twitch .tw-close:hover { border-color: var(--tw-accent, #9146ff); color: var(--tw-accent-hover, #a970ff); }
+.twitch .tw-frame { aspect-ratio: 16 / 9; max-height: 78vh; margin-inline: auto; }
+.twitch .tw-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+.twitch :focus-visible { outline: 2px solid var(--tw-focus, currentColor); outline-offset: 3px; }
+
+/* Feature: the chosen live channel large on a dark band, the others below */
+.twitch .tw-feature { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); background: var(--tw-band, #18181b); color: var(--tw-on-band, #efeff1); margin-bottom: 2.75rem; }
+.twitch .tw-feature-media { border-top-width: 6px; }
+.twitch .tw-feature-media .tw-play { left: 1.25rem; bottom: 1.25rem; width: 3.5rem; height: 3.5rem; }
+.twitch .tw-feature-media .tw-play svg { width: 26px; height: 26px; }
+.twitch .tw-feature-text { display: flex; flex-direction: column; justify-content: center; padding: 2rem clamp(1.25rem, 3cqi, 2.5rem); border-top: 6px solid var(--tw-band-line, #3a3a3d); min-width: 0; }
+.twitch .tw-feature.is-live .tw-feature-text { border-top-color: var(--tw-live); }
+.twitch .tw-feature .tw-status { color: var(--tw-on-band-muted, #adadb8); }
+.twitch .tw-feature h3 { display: flex; align-items: center; gap: .85rem; font-size: clamp(1.9rem, 3.2cqi, 2.6rem); margin: .4rem 0 .8rem; }
+.twitch .tw-feature .tw-avatar { width: 52px; height: 52px; background: var(--tw-band, #18181b); }
+.twitch .tw-feature .twitch-link { color: var(--tw-on-band, #efeff1); }
+.twitch .tw-feature .twitch-link:hover { color: var(--tw-on-band, #efeff1); text-decoration-color: var(--tw-accent, #9146ff); text-decoration-thickness: 3px; text-underline-offset: .12em; }
+.twitch .tw-feature .tw-title { color: var(--tw-on-band-soft, #dedee3); font-size: 1.125rem; -webkit-line-clamp: 3; }
+.twitch .tw-feature .tw-game { color: var(--tw-on-band-muted, #adadb8); }
+.twitch .tw-watch { align-self: flex-start; display: inline-flex; align-items: center; gap: .55rem; margin-top: 1.5rem; padding: .8rem 1.15rem; background: var(--tw-accent, #9146ff); color: var(--tw-on-accent, #fff); font-weight: 600; text-decoration: none; }
+.twitch .tw-feature:not(.is-live) .tw-feature-media img { filter: saturate(.3) brightness(.8); }
+.twitch .tw-visit { background: none; color: var(--tw-on-band, #efeff1); border: 1px solid var(--tw-band-line, #3a3a3d); }
+.twitch .tw-watch:hover { background: var(--tw-accent-hover, #a970ff); color: var(--tw-on-accent, #fff); }
+.twitch .tw-visit:hover { background: none; color: var(--tw-accent-hover, #a970ff); border-color: var(--tw-accent, #9146ff); }
+
+/* Compact: one line per channel, avatar instead of the image */
+.twitch.twitch--compact .tw-items { gap: 0 2rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); }
+.twitch.twitch--compact .tw-thumb { display: none; }
+.twitch.twitch--compact .tw-body { padding: .9rem 0; border-bottom: 1px solid var(--tw-line, rgba(128, 128, 128, .4)); }
+.twitch.twitch--compact h3 { font-size: 1.2rem; }
+.twitch.twitch--compact .tw-title { -webkit-line-clamp: 1; }
+
+/* Strip: one row that scrolls sideways, by finger, wheel or the buttons */
+.twitch.twitch--strip .tw-items { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(80%, 19rem); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; padding-bottom: 1rem; scrollbar-color: var(--tw-line, rgba(128, 128, 128, .4)) transparent; }
+.twitch.twitch--strip .tw-card { scroll-snap-align: start; }
+.twitch .tw-strip-ctl { display: flex; gap: .5rem; margin: 0 0 2.25rem; }
+.twitch .tw-strip-ctl[hidden] { display: none; }
+.twitch .tw-strip-ctl button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; color: var(--tw-ink); background: none; border: 1px solid var(--tw-line, rgba(128, 128, 128, .4)); cursor: pointer; }
+.twitch .tw-strip-ctl button:hover:not(:disabled) { border-color: var(--tw-accent, #9146ff); color: var(--tw-link); }
+.twitch .tw-strip-ctl button:disabled { opacity: .35; cursor: default; }
+
+@container (max-width: 760px) {
+  .twitch .tw-feature { grid-template-columns: 1fr; }
+  .twitch .tw-feature-text { border-top: 0; padding-block: 1.5rem 1.75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .twitch .tw-badge::before { animation: none; }
+  .twitch .tw-thumb img, .twitch .tw-feature-media img { transition: none; }
+  .twitch .tw-card:hover .tw-thumb img { transform: none; }
+}

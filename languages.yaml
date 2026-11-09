@@ -1,0 +1,78 @@
+en:
+  PLUGIN_TWITCH_LIVE:
+    HEADING: On Twitch
+    LIVE: Live
+    OFFLINE: Offline
+    # Viewer count: 0, 1, more (%s is the formatted number)
+    VIEWERS_0: '%s viewers'
+    VIEWERS_1: '%s viewer'
+    VIEWERS_N: '%s viewers'
+    THOUSANDS: ','
+    PREV: Previous channels
+    NEXT: Next channels
+    NOW_PLAYING: 'Now playing:'
+    CLOSE: Close the player
+    WATCH: Watch
+    VISIT: See the channel on Twitch
+    NOTE: Twitch's player only loads when you click a live channel.
+    PLAYER_TITLE: 'Twitch player: %s'
+    # Admin
+    CLIENT_ID: Client ID
+    CLIENT_ID_HELP: "Twitch application (dev.twitch.tv console, category Website Integration). Empty: Twitch is not asked, the channels show without status or image."
+    CLIENT_SECRET: Client secret
+    CLIENT_SECRET_HELP: Never sent back to the browser by the Admin. To change it, type the new one.
+    CHANNELS: Channels
+    CHANNELS_HELP: "Twitch channel names, in display order (live ones come first). Letters, digits and _: an invalid name is ignored."
+    LAYOUT: Presentation
+    LAYOUT_GRID: Card grid
+    LAYOUT_COMPACT: Compact list
+    LAYOUT_FEATURE: One featured
+    LAYOUT_STRIP: Scrolling strip
+    FEATURE: Featured channel
+    FEATURE_HELP: "For One featured. Most watched and random pick among the live channels; with none live, the first of the list, or one at random."
+    FEATURE_TOP: Most watched
+    FEATURE_RANDOM: Random among the live ones
+    FEATURE_CHOSEN: A chosen channel
+    FEATURE_CHANNEL: Chosen channel
+    FEATURE_CHANNEL_HELP: "For A chosen channel. It stays featured even offline (offline image, link to its channel)."
+    CACHE_LIFETIME: Status freshness (seconds)
+    CACHE_LIFETIME_HELP: How long the site keeps Twitch's answer before asking again.
+fr:
+  PLUGIN_TWITCH_LIVE:
+    HEADING: Sur Twitch
+    LIVE: En direct
+    OFFLINE: Hors ligne
+    VIEWERS_0: '%s spectateur'
+    VIEWERS_1: '%s spectateur'
+    VIEWERS_N: '%s spectateurs'
+    # No-break space
+    THOUSANDS: " "
+    PREV: Chaînes précédentes
+    NEXT: Chaînes suivantes
+    NOW_PLAYING: 'En lecture :'
+    CLOSE: Fermer le lecteur
+    WATCH: Regarder
+    VISIT: Voir la chaîne sur Twitch
+    NOTE: Le lecteur de Twitch ne se charge que si vous cliquez sur une chaîne en direct.
+    PLAYER_TITLE: 'Lecteur Twitch : %s'
+    # Admin
+    CLIENT_ID: Client ID
+    CLIENT_ID_HELP: "Application Twitch (console des développeurs de Twitch, catégorie « Website Integration »). Vide : Twitch n'est pas interrogé, les chaînes s'affichent sans statut ni image."
+    CLIENT_SECRET: Client secret
+    CLIENT_SECRET_HELP: Jamais renvoyé au navigateur par l'Admin. Pour le changer, saisir le nouveau.
+    CHANNELS: Chaînes
+    CHANNELS_HELP: "Noms des chaînes Twitch, dans l'ordre d'affichage (celles en direct passent devant). Lettres, chiffres et _ : un nom invalide est ignoré."
+    LAYOUT: Présentation
+    LAYOUT_GRID: Grille de cartes
+    LAYOUT_COMPACT: Liste compacte
+    LAYOUT_FEATURE: Une en vedette
+    LAYOUT_STRIP: Bande défilante
+    FEATURE: Vedette
+    FEATURE_HELP: "Pour « Une en vedette ». La plus regardée et le hasard prennent parmi les chaînes en direct ; sans aucun direct, la première de la liste, ou une au hasard."
+    FEATURE_TOP: La plus regardée
+    FEATURE_RANDOM: Au hasard parmi les directs
+    FEATURE_CHOSEN: Une chaîne choisie
+    FEATURE_CHANNEL: Chaîne mise en avant
+    FEATURE_CHANNEL_HELP: "Pour « Une chaîne choisie ». Elle reste en vedette même hors ligne (image hors ligne, lien vers sa chaîne)."
+    CACHE_LIFETIME: Fraîcheur du statut (secondes)
+    CACHE_LIFETIME_HELP: Durée pendant laquelle le site garde la réponse de Twitch avant de redemander.
