@@ -1,5 +1,7 @@
 # Twitch Live
 
+![Twich Live Plugin for Grav](docs/grav-twitch-plugin.jpg)
+
 [![CI](https://github.com/Exe64/grav-plugin-twitch-live/actions/workflows/ci.yml/badge.svg)](https://github.com/Exe64/grav-plugin-twitch-live/actions/workflows/ci.yml)
 
 Grav plugin: the Twitch channels you choose, live ones first, with the stream preview, avatar, title,
