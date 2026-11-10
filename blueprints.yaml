@@ -1,7 +1,7 @@
 name: Twitch Live
 slug: twitch-live
 type: plugin
-version: 1.0.0
+version: 1.0.1
 description: "Twitch channels, live ones first, as a grid, a compact list, a feature or a strip, on a page or anywhere with the [twitch] shortcode; the player loads only when the reader clicks."
 icon: twitch
 author:
@@ -14,7 +14,7 @@ docs: https://github.com/Exe64/grav-plugin-twitch-live/blob/main/README.md
 bugs: https://github.com/Exe64/grav-plugin-twitch-live/issues
 keywords: [twitch, live, stream, streaming, shortcode, embed]
 compatibility:
-  grav: ['2.2']
+  grav: ['2.0']
 dependencies:
   - { name: grav, version: '>=2.2.0' }
   - { name: shortcode-core, version: '>=5.0.0' }

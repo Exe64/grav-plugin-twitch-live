@@ -16,8 +16,8 @@ cd "$W" && unzip -q "$GRAV_ZIP" && cd "$(ls -d "$W"/grav*/ | head -1)" || exit 1
 G="$PWD"
 # A grav-admin archive (local cache) would redirect to the admin setup: keep the plain Grav
 rm -rf user/plugins/{admin,admin2,login,form,email,flex-objects,api,problems} 2>/dev/null
-for i in 1 2 3; do php bin/gpm install -y shortcode-core >/dev/null; [[ -d user/plugins/shortcode-core ]] && break; sleep 5; done
-[[ -d user/plugins/shortcode-core ]] || { echo "shortcode-core not installed"; exit 1; }
+for i in 1 2 3; do php bin/gpm install -y shortcode-core feed >/dev/null; [[ -d user/plugins/shortcode-core && -d user/plugins/feed ]] && break; sleep 5; done
+[[ -d user/plugins/shortcode-core && -d user/plugins/feed ]] || { echo "shortcode-core or feed not installed"; exit 1; }
 mkdir user/plugins/twitch-live && cp -r "$REPO"/{twitch-live.php,twitch-live.yaml,blueprints.yaml,languages.yaml,assets,templates} user/plugins/twitch-live/
 rm -rf user/pages/* && cp -r "$REPO"/test/pages/. user/pages/
 printf 'title: Test\n' > user/config/site.yaml
@@ -28,7 +28,7 @@ conf() {
   printf "enabled: true\n${2-client_id: test-id\nclient_secret: test-secret\n}channels: [ExeProd, Other_Chan, \"bad name!\", third, exeprod]\ntoken_url: http://127.0.0.1:$MOCK/oauth2/token\napi_url: http://127.0.0.1:$MOCK/helix\n${1:-}" > user/config/plugins/twitch-live.yaml
   php bin/grav cache -q --no-ansi
 }
-mkdir -p user/config/plugins && conf
+mkdir -p user/config/plugins && printf 'enabled: true\nenable_json_feed: true\n' > user/config/plugins/feed.yaml && conf
 export TWITCH_LOG="$W/twitch.log"
 php -S 127.0.0.1:"$MOCK" "$REPO/test/twitch-mock.php" >"$W/mock.log" 2>&1 &
 php -S 127.0.0.1:"$PORT" system/router.php >"$W/php.log" 2>&1 &
@@ -72,6 +72,16 @@ calls=$(cat "$TWITCH_LOG")
 seen=$(for i in $(seq 16); do get /random >/dev/null; blk twitch | feat | names; done | sort -u | paste -sd,)
 [[ $seen == Other_Chan,third ]] && ok "random feature among live channels, drawn at each view despite the page cache ($seen)" || ko "random: $seen"
 for f in twitch-live.js twitch-live.css; do code=$(curl -s -o /dev/null -w '%{http_code}' "$B/user/plugins/twitch-live/assets/$f"); [[ $code == 200 ]] || ko "asset $f $code"; done; ok "assets served"
+
+echo "== summaries and feeds"
+get /blog/post >/dev/null; [[ $(grep -c '<section class="twitch twitch--' "$W/page.html") == 1 ]] && ok "post: its own block rendered" || ko "post: block missing"
+get /modular >/dev/null; [[ $(grep -c '<section class="twitch twitch--' "$W/page.html") == 1 ]] && ! has 'twitch-live:' && ok "modular page: the block of its module rendered" || ko "modular page: block missing"
+get /blog >/dev/null; has 'Text after the block' && ! has 'twitch-live:' && ! has '<section class="twitch' && ok "blog list: summary without the block nor its placeholder" || ko "blog list: $(grep -c '<section class="twitch' "$W/page.html") block(s), $(grep -c 'twitch-live:' "$W/page.html") placeholder(s), summary text $(grep -c 'Text after the block' "$W/page.html")"
+for f in rss atom json; do
+  code=$(get /blog.$f)
+  if [[ $f == json ]]; then php -r 'exit(json_decode(file_get_contents($argv[1])) === null ? 1 : 0);' "$W/page.html"; else php -r 'exit(simplexml_load_file($argv[1]) === false ? 1 : 0);' "$W/page.html" 2>/dev/null; fi; valid=$?
+  [[ $code == 200 && $valid == 0 ]] && has 'Text after the block' && ! has 'twitch-live' && ! has 'twitch--' && ok "$f feed: valid, item text kept, no block nor placeholder" || ko "$f feed: $code, valid=$valid, $(grep -o 'twitch-live[^ ]\{0,30\}' "$W/page.html" | head -1)"
+done
 
 echo "== French site, no credentials"
 printf 'languages:\n  supported: [fr]\n  include_default_lang: false\n' >> user/config/system.yaml && php bin/grav cache -q --no-ansi

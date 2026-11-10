@@ -1,3 +1,13 @@
+# v1.0.1
+## 2026-11-10
+
+1. [](#bugfix)
+    * The block no longer shows in the summary of its page in a blog list, nor in the RSS, Atom and JSON feeds of the feed plugin, where it broke the JSON feed
+    * The placeholder of the block is replaced in HTML pages only
+1. [](#improved)
+    * `compatibility: grav: ['2.0']`, the Grav convention (the `grav >=2.2.0` dependency still sets the floor)
+    * Tests and CI left out of the release archive (`.gitattributes`)
+
 # v1.0.0
 ## 2026-11-09
 

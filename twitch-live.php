@@ -3,6 +3,7 @@ namespace Grav\Plugin;
 
 use Grav\Common\HTTP\Client;
 use Grav\Common\Plugin;
+use RocketTheme\Toolbox\Event\Event;
 use Thunder\Shortcode\Shortcode\ShortcodeInterface;
 use Twig\TwigFunction;
 
@@ -33,6 +34,7 @@ class TwitchLivePlugin extends Plugin
             'onTwigInitialized' => ['onTwigInitialized', 0],
             'onShortcodeHandlers' => ['onShortcodeHandlers', 0],
             'onOutputGenerated' => ['onOutputGenerated', 0],
+            'onFeedItemContent' => ['onFeedItemContent', 0],
         ];
     }
 
@@ -57,7 +59,10 @@ class TwitchLivePlugin extends Plugin
             // Kept in the page cache meta by shortcode-core, so cached pages load them too
             $this->grav['shortcode']->addAssets('css', 'plugin://twitch-live/assets/twitch-live.css');
             $this->grav['shortcode']->addAssets('js', ['plugin://twitch-live/assets/twitch-live.js', ['group' => 'bottom', 'loading' => 'defer']]);
-            $p = [];
+            // The page the block belongs to: in another page's output (a blog list showing its summary) it is left out.
+            // A module is only ever shown inside its parent: no page, always rendered.
+            $page = $this->grav['shortcode']->getPage();
+            $p = $page && !$page->isModule() ? ['_page' => md5((string) $page->path())] : [];
             foreach (['layout', 'channels', 'feature', 'feature_channel'] as $k) {
                 $v = trim((string) $sc->getParameter($k, ''));
                 if ($v !== '') {
@@ -70,16 +75,34 @@ class TwitchLivePlugin extends Plugin
         });
     }
 
+    /**
+     * HTML pages only: the block of the page shown (or of its modules) rendered, the placeholders of other pages
+     * (summaries in a blog list) removed. Other formats (feeds, JSON) are left as they are.
+     */
     public function onOutputGenerated(): void
     {
         $out = $this->grav->output;
-        if (!is_string($out) || !str_contains($out, self::PLACEHOLDER)) {
+        $page = $this->grav['page'] ?? null;
+        if (!is_string($out) || !str_contains($out, self::PLACEHOLDER) || !$page || $page->templateFormat() !== 'html') {
             return;
         }
+        $self = md5((string) $page->path());
+        $this->grav->output = self::placeholders($out, fn(array $p) => isset($p['_page']) && $p['_page'] !== $self ? ''
+            : $this->grav['twig']->processTemplate('partials/twitch-live.html.twig', ['twitch_params' => $p]));
+    }
+
+    /** Feed plugin: an item's content goes to feed readers without the block (no player there) nor its placeholder. */
+    public function onFeedItemContent(Event $event): void
+    {
+        $event['content'] = self::placeholders((string) $event['content'], static fn() => '');
+    }
+
+    /** $html with each placeholder replaced by $render(its parameters). */
+    private static function placeholders(string $html, callable $render): string
+    {
         // A shortcode alone on its line ends up in a paragraph, which cannot hold the section: <p> dropped
-        $this->grav->output = preg_replace_callback('#(<p>\s*)?' . self::PLACEHOLDER . '([A-Za-z0-9+/=]*)-->(?(1)\s*</p>)#',
-            fn($m) => $this->grav['twig']->processTemplate('partials/twitch-live.html.twig',
-                ['twitch_params' => (array) json_decode((string) base64_decode($m[2]), true)]), $out);
+        return preg_replace_callback('#(<p>\s*)?' . self::PLACEHOLDER . '([A-Za-z0-9+/=]*)-->(?(1)\s*</p>)#',
+            static fn($m) => $render((array) json_decode((string) base64_decode($m[2]), true)), $html);
     }
 
     /**

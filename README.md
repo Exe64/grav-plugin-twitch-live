@@ -98,7 +98,10 @@ The block carries its own classes (`.twitch`, `.tw-*`) and nothing from the them
   default), channel images for a day, the token until shortly before it expires. A failure is cached
   for 60 seconds and logged as a warning; the channels then show without status.
 - The shortcode leaves a placeholder in the page content, replaced by the block on each request:
-  Grav's page cache never freezes the live status or the random pick.
+  Grav's page cache never freezes the live status or the random pick. The block shows only on its own
+  page (or the modular page holding it): a blog list leaves it out of the page's summary, and the
+  [feed](https://github.com/getgrav/grav-plugin-feed) plugin's RSS, Atom and JSON feeds leave it out of
+  the item.
 - Images are loaded by the reader's browser from Twitch's CDN (`static-cdn.jtvnw.net`, no referrer,
   no cookie); any other image address from the API is dropped. The player (and its cookies) loads
   only on click, above the channels, one at a time per block, with `parent` set to the current host
